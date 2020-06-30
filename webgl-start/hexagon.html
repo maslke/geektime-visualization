@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>hexagon</title>
+</head>
+
+<body>
+    <canvas width="400" height="300"></canvas>
+    <script id="vertex-shader" type="notjs">
+        attribute vec2 position;
+
+        void main() {
+            gl_PointSize = 1.0;
+            gl_Position = vec4(0.5 * position, 1.0, 1.0);
+        }
+    </script>
+    <script id="fragment-shader" type="notjs">
+        precision mediump float;
+        void main() {
+            gl_FragColor = vec4(1, 0, 0,  1);
+        }
+    </script>
+    <script type="text/javascript">
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        function createProgram(gl, shaders) {
+            const program = gl.createProgram();
+            for (let i = 0; i < shaders.length; i++) {
+                gl.attachShader(program, shaders[i]);
+            }
+            gl.linkProgram(program);
+            return program;
+        }
+
+
+        const canvas = document.querySelector('canvas');
+        const gl = canvas.getContext('webgl');
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, document.querySelector('#vertex-shader').text);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, document.querySelector('#fragment-shader').text);
+        const program = createProgram(gl, [vertexShader, fragmentShader]);
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        const position = gl.getAttribLocation(program, 'position');
+
+        const number = Math.sqrt(3) / 2.0;
+
+        const positions = new Float32Array([
+            1.0, 0.0,
+            0.5, number,
+            -0.5, number,
+            -1.0, 0.0,
+            -0.5, -number,
+            0.5, -number
+        ]);
+
+        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(position);
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, 6);
+
+
+
+    </script>
+</body>
