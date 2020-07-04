@@ -45,6 +45,7 @@
             return [v[0] + start[0], v[1] + start[1]];
         }
 
+        // 根据两个点，生成向量
         function vector(p1, p2) {
             return [p2[0] - p1[0], p2[1] - p1[1]];
         }
@@ -71,15 +72,21 @@
             context.stroke();
             context.closePath();
         }
+
+        function drawText(context, text, p, delta, fontStyle = '20px', fillStyle = 'red') {
+            context.save();
+            context.font = fontStyle;
+            context.fillStyle = fillStyle;
+            context.fillText(text, p[0] + delta, p[1] + delta);
+            context.restore();
+        }
+
     </script>
     <script type="text/javascript">
         const canvas = document.querySelector('canvas');
         const context = canvas.getContext('2d');
         const height = canvas.height;
         const width = canvas.width;
-
-        context.translate(0, height);
-        context.scale(1, -1);
 
         show();
 
@@ -99,6 +106,9 @@
             const q = [parseInt(Math.random() * width), parseInt(Math.random() * height)];
             // point r
             const r = [parseInt(Math.random() * width), parseInt(Math.random() * height)];
+
+
+            
 
             const vqp = [p[0] - q[0], p[1] - q[1]];
             const vqr = [r[0] - q[0], r[1] - q[1]];
@@ -120,6 +130,10 @@
             drawCircle(context, q, 'green');
             drawCircle(context, r, 'blue');
 
+            drawText(context, 'P', p, 10, '20px', 'red');
+            drawText(context, 'Q', q, 10, '20px', 'green');
+            drawText(context, 'R', r, 10, '20px', 'blue');
+
             const v6 = normalize(vqr);
 
             const value = dot(vqp, v6);
@@ -128,6 +142,7 @@
 
             const pnt = end(ret, q);
             drawCircle(context, end(ret, q), 'red');
+            drawText(context, 'O', pnt, 10, '20px', 'red');
 
             drawLine(context, p, pnt, 'red');
 
