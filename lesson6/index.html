@@ -45,6 +45,10 @@
             return [v[0] + start[0], v[1] + start[1]];
         }
 
+        function vector(p1, p2) {
+            return [p2[0] - p1[0], p2[1] - p1[1]];
+        }
+
     </script>
     <script type="text/javascript">
         function drawLine(context, p, q, strokeStyle = 'black', lineDash = []) {
@@ -98,6 +102,7 @@
 
             const vqp = [p[0] - q[0], p[1] - q[1]];
             const vqr = [r[0] - q[0], r[1] - q[1]];
+            const vpr = [r[0] - p[0], r[1] - p[1]];
             const vrq = reverse(vqr);
 
             const vqre = extend(5, vqr);
@@ -125,12 +130,19 @@
             drawCircle(context, end(ret, q), 'red');
 
             drawLine(context, p, pnt, 'red');
+
+            const v1 = vector(q, pnt);
+            const v2 = vector(r, pnt);
+            const value1 = dot(v1, v2);
+            const length1 = length(vqp);
+            const length2 = length(vpr);
+            if (value1 > 0) {
+                if (length1 < length2) {
+                    drawLine(context, q, p, 'red');
+                } else {
+                    drawLine(context, r, p, 'red');
+                }
+            }
         }
-
-
-
-
-
-
     </script>
 </body>
