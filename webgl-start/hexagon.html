@@ -47,13 +47,9 @@
         const program = createProgram(gl, [vertexShader, fragmentShader]);
         gl.useProgram(program);
 
-        const buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-
+    
         const position = gl.getAttribLocation(program, 'position');
-
         const number = Math.sqrt(3) / 2.0;
-
         const positions = new Float32Array([
             1.0, 0.0,
             0.5, number,
@@ -63,10 +59,14 @@
             0.5, -number
         ]);
 
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+        
         gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(position);
 
+        gl.viewport(0, 0, canvas.width, canvas.height);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 6);
 

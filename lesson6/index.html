@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>distance</title>
+</head>
+
+<body>
+    <canvas width="512" height="512"></canvas>
+    <script type="text/javascript">
+
+        // 向量长度
+        function length(v) {
+            return Math.hypot(...v);
+        }
+
+        // 两个向量点乘
+        function dot(v1, v2) {
+            return v1[0] * v2[0] + v1[1] * v2[1];
+        }
+
+        // 两个向量叉乘
+        function cross(v1, v2) {
+            return v1[0] * v2[1] - v1[1] * v2[0];
+        }
+
+        // 使用因子放缩向量
+        function extend(factor, v) {
+            return [v[0] * factor, v[1] * factor];
+        }
+
+        // 向量转向
+        function reverse(v) {
+            return [-v[0], -v[1]];
+        }
+
+        // 向量归一化
+        function normalize(v1) {
+            const len = length(v1);
+            return [v1[0] / len, v1[1] / len];
+        }
+
+        // 给定向量和起点坐标，计算终点坐标
+        function end(v, start) {
+            return [v[0] + start[0], v[1] + start[1]];
+        }
+
+    </script>
+    <script type="text/javascript">
+        function drawLine(context, p, q, strokeStyle = 'black', lineDash = []) {
+            context.save();
+            context.beginPath();
+            context.strokeStyle = strokeStyle;
+            context.setLineDash(lineDash);
+            context.moveTo(...p);
+            context.lineTo(...q);
+            context.stroke();
+            context.closePath();
+            context.restore();
+        }
+
+        function drawCircle(context, p, strokeStyle) {
+            context.save();
+            context.strokeStyle = strokeStyle;
+            context.beginPath();
+            context.arc(p[0], p[1], 4, 0, Math.PI * 2, true);
+            context.stroke();
+            context.closePath();
+        }
+    </script>
+    <script type="text/javascript">
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext('2d');
+        const height = canvas.height;
+        const width = canvas.width;
+
+        context.translate(0, height);
+        context.scale(1, -1);
+
+        show();
+
+        setInterval(function () {
+           show();
+        }, 3000);
+
+        function clear() {
+            context.clearRect(0, 0, width, height);
+        }
+
+        function show() {
+            clear();
+             // point p
+             const p = [parseInt(Math.random() * width), parseInt(Math.random() * height)];
+            // point q
+            const q = [parseInt(Math.random() * width), parseInt(Math.random() * height)];
+            // point r
+            const r = [parseInt(Math.random() * width), parseInt(Math.random() * height)];
+
+            const vqp = [p[0] - q[0], p[1] - q[1]];
+            const vqr = [r[0] - q[0], r[1] - q[1]];
+            const vrq = reverse(vqr);
+
+            const vqre = extend(5, vqr);
+            const vrqe = extend(5, vrq);
+
+            const r2 = end(vqre, q);
+            const q2 = end(vrqe, q);
+
+
+            drawLine(context, q, r);
+            drawLine(context, r, r2, 'black', [10, 10]);
+            drawLine(context, q, q2, 'black', [10, 10]);
+
+            drawCircle(context, p, 'red');
+            drawCircle(context, q, 'green');
+            drawCircle(context, r, 'blue');
+
+            const v6 = normalize(vqr);
+
+            const value = dot(vqp, v6);
+
+            const ret = extend(value / length(vqr), vqr);
+
+            const pnt = end(ret, q);
+            drawCircle(context, end(ret, q), 'red');
+
+            drawLine(context, p, pnt, 'red');
+        }
+
+
+
+
+
+
+    </script>
+</body>
