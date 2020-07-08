@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>canvas</title>
+    </head>
+    <body>
+        <canvas width="720" height="256"></canvas>
+        <script type="text/javascript">
+
+            const canvas = document.querySelector('canvas');
+            const context = canvas.getContext('2d');
+            context.translate(128, 128);
+            context.save();
+            context.beginPath();
+            for (let i = 0; i < 5; i++) {
+                context.rotate(Math.PI * 0.4);
+                context.lineTo(0, 100);
+            }
+            context.fillStyle = 'black';
+            context.fill();
+            context.restore();
+
+
+
+
+
+            
+        </script>
+    </body>
+</html>

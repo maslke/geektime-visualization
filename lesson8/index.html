@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>canvas</title>
+    </head>
+    <body>
+        <canvas width="720" height="256"></canvas>
+        <script type="text/javascript">
+
+            function draw(context, points, {fillStyle = 'black', close = false, rule = 'nonzero'} = {}) {
+                context.beginPath();
+                context.moveTo(...points[0]);
+                for (let i = 1; i <= 4; i++) {
+                    context.lineTo(...points[i]);
+                }
+                if (close) {
+                    context.closePath();
+                }
+                context.fillStyle = fillStyle;
+                context.fill(rule);
+            }
+
+            const points = [[0, 100]];
+            for (let i = 1; i <= 4; i++) {
+                const cos = Math.cos(Math.PI * 0.4 * i);
+                const sin = Math.sin(Math.PI * 0.4 * i);
+                const x = points[0][0] * cos - points[0][1] * sin;
+                const y = points[0][0] * sin + points[0][1] * cos;
+                points.push([x, y]);
+            }
+
+            const canvas = document.querySelector('canvas');
+            const context = canvas.getContext('2d');
+            context.save();
+            context.translate(128, 128);
+            context.scale(1, -1);
+            draw(context, points);
+            context.restore();
+
+            const points1 = [points[0], points[2], points[4], points[1], points[3]];
+            context.save();
+            context.translate(512, 128);
+            context.scale(1, -1);
+            draw(context, points1, {rule : 'evenodd'});
+            context.restore();
+
+
+
+            
+        </script>
+    </body>
+</html>
