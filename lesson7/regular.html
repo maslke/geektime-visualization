@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>regular</title>
+    </head>
+    <body>
+        <canvas width="512" height="512"></canvas>
+        <script type="text/javascript">
+            function regular(edges, x, y, r) {
+                const points = [[x, y]];
+                const delta = Math.PI * (1 - (edges - 2) / edges);
+                const cos = Math.cos(delta);
+                const sin = Math.sin(delta);
+                let dir = [r, 0];
+                for (let i = 0; i < edges; i++) {
+                    const p = points[i];
+                    dir = [dir[0] * cos - dir[1] * sin, dir[0] * sin + dir[1] * cos];
+                    points.push([p[0] + dir[0], p[1] + dir[1]]);
+                }
+                return points;    
+            }
+
+            function drawRegular(context, points, {fillStyle = 'black'} = {}) {
+                context.save();
+                context.beginPath();
+                for (let i = 0; i < points.length; i++) {
+                    if (i == 0) {
+                        context.moveTo(...points[i]);
+                    } else {
+                        context.lineTo(...points[i]);
+                    }
+                }
+                context.fillStyle = fillStyle;
+                context.fill();
+                context.closePath();
+                context.restore();
+            }
+
+            const canvas = document.querySelector('canvas');
+            const context = canvas.getContext('2d');
+            context.translate(0.5 * canvas.width, 0.5 * canvas.height);
+            context.scale(1, -1);
+            drawRegular(context, regular(3, 128, 128, 100));
+            drawRegular(context, regular(6, -64, 128, 50));
+            drawRegular(context, regular(11, -64, -64, 30), {fillStyle: 'yellow'});
+            drawRegular(context, regular(60, 128, -64, 6), {fillStyle: 'green'});
+            drawRegular(context, regular(5, 192, 192, 25), {fillStyle: 'blue'});
+            drawRegular(context, regular(4, 10, 10, 50), {fillStyle: 'red'});
+        </script>
+    </body>
+</html>
