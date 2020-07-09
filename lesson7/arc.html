@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>draw arc</title>
+    </head>
+    <body>
+        <canvas width="512" height="512"></canvas>
+        <script type="text/javascript">
+
+            function draw(points, context, {
+                strokeStyle = 'balck',
+                fillStyle = null,
+                close = false
+            } = {}) {
+                context.strokeStyle = strokeStyle;
+                context.beginPath();
+                for (let i = 0; i < points.length; i++) {
+                    if (i === 0) {
+                        context.moveTo(...points[i]);
+                    } else {
+                        context.lineTo(...points[i]);
+                    }
+                }
+                if (close) {
+                    context.closePath();
+                }
+                if (fillStyle) {
+                    context.fillStyle = fillStyle;
+                    context.fill();
+                }
+                context.stroke();
+            }
+
+            function parametric(functionx, functiony) {
+                return function(start, end, segments = 100, ...args) {
+                    const points = [];
+                    for (let i = 0; i <= segments; i++) {
+                        const t = start + (end - start) * i / segments;
+                        points.push([functionx(t, ...args), functiony(t, ...args)]);
+                    }
+
+                    return {
+                        draw: draw.bind(null, points),
+                        points: points,
+                    }
+                }
+            }
+
+            function arc(centerx, centery, r, startAng = 0, endAng = Math.PI * 2) {
+                const ang = Math.min(Math.PI * 2, endAng - startAng);
+                const ret = ang === Math.PI * 2 ? [] : [[centerx, centery]];
+                const segments = Math.round(60 * ang / Math.PI / 2);
+                for (let i = 0; i <= segments; i++) {
+                    const delta = startAng + i * ang / segments;
+                    ret.push([centerx + r * Math.cos(delta), centery + r * Math.sin(delta)]);
+                }
+                return ret;
+            }
+
+            function elicpse(centerx, centery, r0, r1, startAng = 0, endAng = Math.PI * 2) {
+                const ang = Math.min(Math.PI * 2, endAng - startAng);
+                const ret = ang === Math.PI * 2 ? [] : [[centerx, centery]];
+                const segments = Math.round(60 * ang / Math.PI / 2);
+                for (let i = 0; i <= segments; i++) {
+                    const delta = startAng + i * ang / segments;
+                    ret.push([centerx + r0 * Math.cos(delta), centery + r1 * Math.sin(delta)]);
+                }
+                return ret;
+            }
+
+
+            function drawArc(context, points, {fillStyle = 'black'} = {}) {
+                context.save();
+                context.beginPath();
+                for (let i = 0; i < points.length; i++) {
+                    if (i == 0) {
+                        context.moveTo(...points[i]);
+                    } else {
+                        context.lineTo(...points[i]);
+                    }
+                }
+                context.fillStyle = fillStyle;
+                context.fill();
+                context.closePath();
+                context.restore();
+            }
+
+            const canvas = document.querySelector('canvas');
+            const context = canvas.getContext('2d');
+            context.translate(0.5 * canvas.width, 0.5 * canvas.height);
+            context.scale(1, -1);
+        
+            //drawArc(context, arc(-64, 128, 50, 0, 2.5));
+            // drawArc(context, elicpse(0, 0, 50, 100));
+
+            const param = parametric(t => 25 * t, t => 25 * t ** 2);
+            param(-5.5, 5.5).draw(context);
+        </script>
+    </body>
+</html>
