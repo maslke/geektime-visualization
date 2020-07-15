@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>test</title>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,50 +56,13 @@
             return [p2[0] - p1[0], p2[1] - p1[1]];
         }
 
+        // 判断两个向量是否平行
         function horizon(v1, v2) {
             let diff = v1[0] * v2[1] - v1[1] * v2[0];
             return Math.abs(diff) <= 1.0e-5;
         }
 
-    </script>
-    <script type="text/javascript">
-
-        const canvas = document.querySelector('canvas');
-        const context = canvas.getContext('2d');
-
-
-        const pa = [Math.random() * 100, Math.random() * 100];
-        const pb = [100 + Math.random() * 200, 100 + Math.random() * 200];
-        const pc = [Math.random() * 100, Math.random() * 100];
-        const pd = [100 + Math.random() * 200, 100 + Math.random() * 200];
-
-        drawLine(context, pa, pb);
-        drawLine(context, pc, pd);
-        drawCircle(context, pa);
-        drawCircle(context, pb);
-        drawCircle(context, pc);
-        drawCircle(context, pd);
-
-        function drawLine(context, start, end, { strokeStyle = 'black' } = {}) {
-            context.save();
-            context.beginPath();
-            context.moveTo(...start);
-            context.lineTo(...end);
-            context.strokeStyle = strokeStyle;
-            context.closePath();
-            context.stroke();
-            context.restore();
-        }
-
-        function drawCircle(context, p, {strokeStyle = 'black'} = {}) {
-            context.save();
-            context.strokeStyle = strokeStyle;
-            context.beginPath();
-            context.arc(p[0], p[1], 4, 0, Math.PI * 2, true);
-            context.stroke();
-            context.closePath();
-        }
-
+        // 点pnt是否在由[start, end]组成的线段上
         function inLine(start, end, pnt) {
             const v1 = vector(start, pnt);
             const v2 = vector(end, pnt);
@@ -112,6 +80,9 @@
             const v1 = [a, b];
             const v2 = [c, d];
 
+            // 向量平行的情况下
+            // 1. 线段平行
+            // 2. 线段由重合部分
             if (horizon(v1, v2)) {
                 if (inLine(pa, pb, pc)) {
                     return [true, pc];
@@ -124,7 +95,7 @@
                 }
                 if (inLine(pc, pd, pb)) {
                     return [true, pb];
-                }     
+                }
             }
 
             const deltay = pa[1] - pc[1];
@@ -136,10 +107,64 @@
             return [m >= 0 && m <= 1 && m1 >= 0 && m1 <= 1, pnt];
         }
 
-        let ret = intersection(pa, pb, pc, pd);
-        if (ret[0]) {
-            drawCircle(context, ret[1], {strokeStyle: 'red'});
+    </script>
+    <script type="text/javascript">
+
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext('2d');
+
+
+        function drawLine(context, start, end, { strokeStyle = 'black' } = {}) {
+            context.save();
+            context.beginPath();
+            context.moveTo(...start);
+            context.lineTo(...end);
+            context.strokeStyle = strokeStyle;
+            context.closePath();
+            context.stroke();
+            context.restore();
         }
+
+        function drawCircle(context, p, { strokeStyle = 'black' } = {}) {
+            context.save();
+            context.strokeStyle = strokeStyle;
+            context.beginPath();
+            context.arc(p[0], p[1], 4, 0, Math.PI * 2, true);
+            context.stroke();
+            context.closePath();
+        }
+
+        function clear(context) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+
+        function illustrate() {
+
+            const pa = [Math.random() * 100, Math.random() * 100];
+            const pb = [100 + Math.random() * 200, 100 + Math.random() * 200];
+            const pc = [Math.random() * 100, Math.random() * 100];
+            const pd = [100 + Math.random() * 200, 100 + Math.random() * 200];
+
+            drawLine(context, pa, pb);
+            drawLine(context, pc, pd);
+            drawCircle(context, pa);
+            drawCircle(context, pb);
+            drawCircle(context, pc);
+            drawCircle(context, pd);
+
+            let ret = intersection(pa, pb, pc, pd);
+            if (ret[0]) {
+                drawCircle(context, ret[1], { strokeStyle: 'red' });
+            }
+        }
+
+        setInterval(function() {
+            clear(context);
+            illustrate();
+        }, 2000);
+
 
     </script>
 </body>
