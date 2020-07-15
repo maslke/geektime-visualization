@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <canvas width="512" height="512"></canvas>
+    <script type="text/javascript">
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext('2d');
+
+        context.translate(256, 256);
+        context.scale(1, -1);
+
+        function randomRGB() {
+            return [
+                0.5 * Math.random(),
+                0.7,
+                0.45
+            ];
+        }
+
+        for (let i = 0; i < 3; i++) {
+            const [h, s, l] = randomRGB();
+            const p = (i * 0.25 + h) % 1;
+            for (let j = 0; j < 5;j++) {
+                const d = j - 2;
+                context.fillStyle = `hsl(${Math.floor(p * 360)}, ${Math.floor((0.15 * d + s) * 100)}%, ${Math.floor((0.12 * d + l) * 100)}%)`;
+                context.beginPath();
+                context.arc((j - 2) * 60, (i - 1) * 60, 20, 0, Math.PI * 2);
+                context.fill();
+            }
+        }
+
+    </script>
+</body>
+
+</html>

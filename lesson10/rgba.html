@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <canvas width="512" height="512"></canvas>
+    <script type="text/javascript">
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext('2d');
+
+        context.translate(256, 256);
+        context.scale(1, -1);
+
+        function clone(v) {
+            return [...v];
+        }
+
+        function extend(scale, v) {
+            return v.map(item => item * scale);
+        }
+
+        function randomRGB() {
+            return [
+                0.5 * Math.random(),
+                0.5 * Math.random(),
+                0.5 * Math.random()
+            ];
+        }
+
+        for (let i = 0; i < 3; i++) {
+            const v = randomRGB();
+            for (let j = 0; j < 5;j++) {
+                const v1 = extend(0.5 + 0.25 * j, v);
+                context.fillStyle = `rgb(${Math.floor(v1[0] * 256)}, ${Math.floor(v1[1] * 256)}, ${Math.floor(v1[2] * 256)})`;
+                context.beginPath();
+                context.arc((j - 2) * 60, (i - 1) * 60, 20, 0, Math.PI * 2);
+                context.fill();
+            }
+        }
+
+    </script>
+</body>
+
+</html>
